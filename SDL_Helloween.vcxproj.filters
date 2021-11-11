@@ -136,6 +136,9 @@
     <ClInclude Include="headers\Collision.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="headers\ECS\TileComponent.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\1.txt" />

@@ -177,6 +177,7 @@
     <ClInclude Include="headers\ECS\Components.h" />
     <ClInclude Include="headers\ECS\ECS.h" />
     <ClInclude Include="headers\ECS\KeyboardController.h" />
+    <ClInclude Include="headers\ECS\TileComponent.h" />
     <ClInclude Include="headers\ECS\TransformComponent.h" />
     <ClInclude Include="headers\ECS\SpriteComponent.h" />
     <ClInclude Include="headers\Game.h" />
