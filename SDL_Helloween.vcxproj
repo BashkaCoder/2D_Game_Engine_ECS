@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="headers\ECS\ECS.cpp" />
     <ClCompile Include="src\Collision.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
@@ -173,6 +174,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\Collision.h" />
+    <ClInclude Include="headers\ECS\Animation.h" />
     <ClInclude Include="headers\ECS\ColliderComponent.h" />
     <ClInclude Include="headers\ECS\Components.h" />
     <ClInclude Include="headers\ECS\ECS.h" />
@@ -189,6 +191,11 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\1.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitattributes" />
+    <None Include=".gitignore" />
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

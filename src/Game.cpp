@@ -16,9 +16,12 @@ std::vector<ColliderComponent*> Game::colliders;
 auto& player(manager.addEntity());
 auto& wall(manager.addEntity());
 
-auto& tile0(manager.addEntity());
-auto& tile1(manager.addEntity());
-auto& tile2(manager.addEntity());
+enum groupLabels : std::size_t {
+	groupMap,
+	groupPlayers,
+	groupEnemies,
+	groupColliders
+};
 
 SDL_Texture* tex1;
 SDL_Texture* tex2;
@@ -59,24 +62,19 @@ void Game::init(const std::string& title, int x, int y, int width, int height, b
 
 	//Map
 	map = new Map();
-	//Tiles
-	tile0.AddComponent<TileComponent>(234, 234, 48, 48, 0);
-	tile0.AddComponent<ColliderComponent>("water");
-	tile1.AddComponent<TileComponent>(192, 192, 48, 48, 1);
-	tile1.AddComponent<ColliderComponent>("grass");
-	tile2.AddComponent<TileComponent>(336, 336, 48, 48, 2);
-	tile2.AddComponent<ColliderComponent>("sand");
+	map->loadMapFromFile("res/Untitled.pyxel", 10, 10);
 	//Player
 	player.AddComponent<TransformComponent>(150, 0, 100, 100, 2);
-	player.AddComponent<SpriteComponent>("res/out.png");
+	player.AddComponent<SpriteComponent>("res/out.png", true);
 	player.AddComponent<KeyboardController>();
 	player.AddComponent<ColliderComponent>("player");
+	player.addGroup(groupLabels::groupPlayers);
 	//Wall
 	wall.AddComponent<TransformComponent>(400.0f, 150.0f, 48, 48, 1);
 	wall.AddComponent<SpriteComponent>("res/grass.png");
 	wall.getComponent<TransformComponent>().height = 300;
 	wall.AddComponent<ColliderComponent>("wall");
-
+	wall.addGroup(groupLabels::groupMap);
 	//Trash for animation...
 	tex1 = TextureManager::loadTexture("res/out.png");
 	tex2 = TextureManager::loadTexture("res/out_1.png");
@@ -99,14 +97,22 @@ void Game::update() {
 		}
 	}
 }
+
+auto& tiles(manager.getGroup(groupLabels::groupMap));
+auto& players(manager.getGroup(groupLabels::groupPlayers));
+auto& enemies(manager.getGroup(groupLabels::groupEnemies));
+
 void Game::render() {
 	SDL_RenderClear(Game::renderer);
 	//Write render
-	map->drawMap();
-	manager.draw();
-	SDL_SetRenderDrawColor(Game::renderer, 255, 0, 0, 255);
+	for (auto& t : tiles)
+		t->draw();
+	for (auto& p : players)
+		p->draw();
+	for (auto& e : enemies)
+		e->draw();
+	SDL_SetRenderDrawColor(Game::renderer, 205, 0, 148, 255);
 	SDL_RenderDrawRect(Game::renderer, &player.getComponent<ColliderComponent>().collider);
-	SDL_RenderDrawRect(Game::renderer, &wall.getComponent<ColliderComponent>().collider);
 	//Write render
 	SDL_RenderPresent(Game::renderer);
 }
@@ -115,4 +121,9 @@ void Game::clean() {
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 	std::cout << "Game quited" << std::endl;
+}
+void Game::AddTile(int id, int x, int y) {
+	auto& tile(manager.addEntity());
+	tile.AddComponent<TileComponent>(x, y, 48, 48, id);
+	tile.addGroup(groupLabels::groupMap);
 }

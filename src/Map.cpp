@@ -1,5 +1,8 @@
 #include "Map.h"
+#include "Game.h"
 #include "TextureManager.h"
+#include <iostream>
+#include <string>
 
 int lvl1[20][25] = {
 	{1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -24,71 +27,28 @@ int lvl1[20][25] = {
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 };
 
-Map::Map() {
-	sand  = TextureManager::loadTexture("res/sand.png");
-	grass = TextureManager::loadTexture("res/grass.png");
-	water = TextureManager::loadTexture("res/water.png");
+Map::Map() {}
+Map::~Map() {}
 
-	loadMap(lvl1);
-
-	src.x = 0;
-	src.y = 4 * 48; // fifth tile(down from zero)
-	src.h = src.w = 48;
-	dest.w = dest.h = 48;
-
-	dest.x = dest.y = 0;
-}
-Map::~Map() {
-	SDL_DestroyTexture(grass);
-	SDL_DestroyTexture(sand);
-	SDL_DestroyTexture(water);
-}
-
-void Map::loadMap(int mas[20][25]) {
-	for (int y = 0; y < 20; ++y) // row
-		for (int x = 0; x < 25; ++x) { // column
-			map[y][x] = mas[y][x];
-		}
-}	
-
-void Map::loadMapFromFile(const std::string& filename) {
+void Map::loadMapFromFile(const std::string& filename, int sizeX, int sizeY) {
 	std::ifstream in(filename);
 	if (!in) {
 		in.close();
 		printError("Couldn't load map from " + filename);
 	}
 	else {
-		for (int y = 0; y < 20; ++y) // row
-			for (int x = 0; x < 25; ++x) { // column
-				in >> map[y][x];
+		std::string str;
+		for (int i = 0; i < 6; ++i) {
+			getline(in, str);
+		}
+		for (int y = 0; y < sizeY; ++y) // row
+			for (int x = 0; x < sizeX; ++x) { // column
+				int id;
+				in >> id;
+				std::cout << id << std::endl;
+				in.ignore(1); // Because it's CSV
+				Game::AddTile(id, x*48, y*48);
 			}
 		in.close();
 	}
-}
-
-void Map::drawMap() {
-	int type = 0;
-	for (int y = 0; y < 20; ++y) // row
-		for (int x = 0; x < 25; ++x) { // column
-			type = map[y][x];
-
-			dest.x = 48 * x;
-			dest.y = 48 * y;
-
-			switch (type) 
-			{
-			case 0:
-				TextureManager::Draw(water, src, dest);
-				break;
-			case 1:
-				TextureManager::Draw(grass, src, dest);
-				break;
-			case 2:
-				TextureManager::Draw(sand, src, dest);
-				break;
-			default:
-				TextureManager::Draw(water, src, dest);
-				break;
-			}
-		}
 }
